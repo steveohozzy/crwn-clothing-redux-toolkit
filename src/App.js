@@ -12,7 +12,7 @@ import Navigation from './routes/navigation/navigation.component';
 import Authentication from './routes/authentication/authentication.component';
 import Shop from './routes/shop/shop.component';
 import Checkout from './routes/checkout/checkout.component';
-import { setCurrentUser } from './store/user/user.action';
+import { setCurrentUser } from './store/user/user.reducer';
 
 const App = () => {
   const dispatch = useDispatch();
@@ -22,11 +22,20 @@ const App = () => {
       if (user) {
         createUserDocumentFromAuth(user);
       }
-      dispatch(setCurrentUser(user));
+      //used if wanting to ensure you do not return a non serialzed object if you have not turned this off in reducer settings
+      const pickedUser =
+        user && (({acccessToken, email}) => ({acccessToken, email}))(user);
+
+      //used for above function if to ensure you do not return a non serialzied object otherwise use commented out ones below
+      console.log(setCurrentUser(pickedUser))
+      dispatch(setCurrentUser(pickedUser));
+
+      // console.log(setCurrentUser(user))
+      // dispatch(setCurrentUser(user));
     });
 
     return unsubscribe;
-  }, []);
+  }, [dispatch]);
 
   return (
     <Routes>

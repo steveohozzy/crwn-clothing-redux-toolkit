@@ -29,7 +29,15 @@ const middleWares = [process.env.NODE_ENV === 'development' && logger].filter(
 
 export const store = configureStore({
   reducer: rootReducer,
-  //middleware: middleWares,
+  //turn off serializable check from default middleware to stop firebase error as return is class based object
+  //concat part adds our own middleware to array of default middleware
+  // middleware: (getDefaultMiddleware) => getDefaultMiddleware({
+  //   serializableCheck: false
+  // }).concat(middleWares),
+
+  //set that you do not get a non serializable value
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(middleWares),
 });
 
 // export const persistor = persistStore(store);
